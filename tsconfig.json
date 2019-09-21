@@ -1,0 +1,14 @@
+{
+  "version": "3.5",
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2015",
+    "noEmitHelpers": true,
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

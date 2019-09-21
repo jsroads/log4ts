@@ -1,0 +1,36 @@
+{
+  "name": "log4ts",
+  "version": "0.4.2",
+  "description": "TypeScript logging library",
+  "main": "build/log4ts.js",
+  "scripts": {
+    "test": "$(npm bin)/webpack --config webpack.test.config.js && $(npm bin)/jasmine JASMINE_CONFIG_PATH=jasmine.json"
+  },
+  "typescript": {
+    "definition": "index.d.ts"
+  },
+  "typings": "index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/koroandr/log4ts.git"
+  },
+  "keywords": [
+    "typescript"
+  ],
+  "author": "koroandr",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/koroandr/log4ts/issues"
+  },
+  "homepage": "https://github.com/koroandr/log4ts",
+  "devDependencies": {
+    "@types/jasmine": "^2.8.4",
+    "jasmine": "^2.8.0",
+    "ts-loader": "^2.0.2",
+    "typescript": "^2.2.0",
+    "webpack": "^2.3.0"
+  },
+  "dependencies": {
+    "requirejs": "^2.3.6"
+  }
+}
