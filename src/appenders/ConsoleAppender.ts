@@ -3,6 +3,7 @@ import {LogEntry} from "../LogEntry";
 import BaseAppender from "./BaseAppender";
 import {LogLevel} from "../LogLevel";
 import {LogColor} from "../LogColor";
+import {logStack} from "../Utils";
 
 export default class ConsoleAppender extends BaseAppender implements IAppender {
     constructor(private console?: Console) {
@@ -19,6 +20,9 @@ export default class ConsoleAppender extends BaseAppender implements IAppender {
                 case LogLevel.TRACE:
                     color = LogColor.TRACE;
                     break;
+                case LogLevel.LOG:
+                    color = LogColor.LOG;
+                    break;
                 case LogLevel.INFO:
                     color = LogColor.INFO;
                     break;
@@ -33,6 +37,7 @@ export default class ConsoleAppender extends BaseAppender implements IAppender {
                     break;
                 default:
             }
+            entry.stack = logStack(4);
             this.getConsole().log('%c'+this.layout.format(entry),'color:'+color);
         } else {
             this.getConsole().log(this.layout.format(entry));
@@ -46,4 +51,5 @@ export default class ConsoleAppender extends BaseAppender implements IAppender {
     private getConsole(): Console {
         return this.console || console;
     }
+
 }

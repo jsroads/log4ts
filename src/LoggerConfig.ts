@@ -72,7 +72,7 @@ export default class LoggerConfig {
 
 export interface ConfigJson {
     layouts: ConfigJsonLayout[];
-    level: "ALL" | "TRACE" | "DEBUG" | "INFO" | "WARN" | "ERROR" | "FATAL" | "OFF";
+    level: "ALL" | "TRACE" | "DEBUG" | "LOG" | "INFO" | "WARN" | "ERROR" | "FATAL" | "OFF";
     tag: string;
 }
 

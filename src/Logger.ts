@@ -29,7 +29,7 @@ export default class Logger {
     }
 
     public log(message: string, object?: any, deep?: number) {
-        this.doLog(LogLevel.INFO, message, object, deep);
+        this.doLog(LogLevel.LOG, message, object, deep);
     }
 
     public info(message: string, object?: any, deep?: number) {
@@ -61,7 +61,7 @@ export default class Logger {
             if (typeof object !== "undefined") {
                 message += ' ' + stringify(object, deep || 1);
             }
-            var appender = Logger.config.getAppender()
+            var appender = Logger.config.getAppender();
             appender.append({
                 message: message,
                 time: new Date(),

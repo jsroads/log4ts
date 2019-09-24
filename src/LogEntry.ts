@@ -5,5 +5,6 @@ export interface LogEntry {
     time: Date;
     message: string;
     tag: string;
-    useColor: boolean;
+    stack?: string;
+    useColor?: boolean;
 }

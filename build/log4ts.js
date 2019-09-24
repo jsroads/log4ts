@@ -82,17 +82,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 "use strict";
 
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var LogLevel;
 (function (LogLevel) {
     LogLevel[LogLevel["ALL"] = 0] = "ALL";
     LogLevel[LogLevel["TRACE"] = 1] = "TRACE";
     LogLevel[LogLevel["DEBUG"] = 2] = "DEBUG";
-    LogLevel[LogLevel["INFO"] = 3] = "INFO";
-    LogLevel[LogLevel["WARN"] = 4] = "WARN";
-    LogLevel[LogLevel["ERROR"] = 5] = "ERROR";
-    LogLevel[LogLevel["FATAL"] = 6] = "FATAL";
-    LogLevel[LogLevel["OFF"] = 7] = "OFF";
+    LogLevel[LogLevel["LOG"] = 3] = "LOG";
+    LogLevel[LogLevel["INFO"] = 4] = "INFO";
+    LogLevel[LogLevel["WARN"] = 5] = "WARN";
+    LogLevel[LogLevel["ERROR"] = 6] = "ERROR";
+    LogLevel[LogLevel["FATAL"] = 7] = "FATAL";
+    LogLevel[LogLevel["OFF"] = 8] = "OFF";
 })(LogLevel = exports.LogLevel || (exports.LogLevel = {}));
 function logLevelToString(level) {
     return LogLevel[level];
@@ -106,36 +107,34 @@ exports.logLevelToString = logLevelToString;
 
 "use strict";
 
-exports.__esModule = true;
-var LogLevel_1 = __webpack_require__(0);
-var BasicLayout_1 = __webpack_require__(3);
-var ConsoleAppender_1 = __webpack_require__(2);
-var LoggerConfig = /** @class */ (function () {
-    function LoggerConfig(appender, level, tag) {
-        if (level === void 0) { level = LogLevel_1.LogLevel.INFO; }
+Object.defineProperty(exports, "__esModule", { value: true });
+const LogLevel_1 = __webpack_require__(0);
+const BasicLayout_1 = __webpack_require__(3);
+const ConsoleAppender_1 = __webpack_require__(2);
+class LoggerConfig {
+    constructor(appender, level = LogLevel_1.LogLevel.INFO, tag) {
         if (appender) {
             this.addAppender(appender);
             this.level = level;
             this.tag = tag;
         }
     }
-    LoggerConfig.createFromJson = function (json) {
-        var config = new LoggerConfig(null, LogLevel_1.LogLevel[json.level], json.tag);
-        for (var _i = 0, _a = json.layouts; _i < _a.length; _i++) {
-            var layout_json = _a[_i];
-            var layout = void 0;
+    static createFromJson(json) {
+        let config = new LoggerConfig(null, LogLevel_1.LogLevel[json.level], json.tag);
+        for (let layout_json of json.layouts) {
+            let layout;
             switch (layout_json.type) {
                 case "basic":
-                    layout = new BasicLayout_1["default"]();
+                    layout = new BasicLayout_1.default();
                     break;
                 case "html":
                     break;
             }
-            var appender_json = layout_json.appender;
-            var appender = void 0;
+            let appender_json = layout_json.appender;
+            let appender;
             switch (appender_json.type) {
                 case "console":
-                    appender = new ConsoleAppender_1["default"]();
+                    appender = new ConsoleAppender_1.default();
                     break;
                 case "dom":
                     break;
@@ -144,30 +143,29 @@ var LoggerConfig = /** @class */ (function () {
             config.addAppender(appender);
         }
         return config;
-    };
-    LoggerConfig.prototype.addAppender = function (appender) {
+    }
+    addAppender(appender) {
         this.appender = (appender);
-    };
-    LoggerConfig.prototype.setLevel = function (level) {
+    }
+    setLevel(level) {
         this.level = level;
-    };
-    LoggerConfig.prototype.getAppender = function () {
+    }
+    getAppender() {
         return this.appender;
-    };
-    LoggerConfig.prototype.getLevel = function () {
+    }
+    getLevel() {
         return this.level;
-    };
-    LoggerConfig.prototype.hasTag = function (tag) {
+    }
+    hasTag(tag) {
         if (!this.tag)
             return true;
         if (this.tag === tag) {
             return true;
         }
         return false;
-    };
-    return LoggerConfig;
-}());
-exports["default"] = LoggerConfig;
+    }
+}
+exports.default = LoggerConfig;
 
 
 /***/ }),
@@ -176,28 +174,17 @@ exports["default"] = LoggerConfig;
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-exports.__esModule = true;
-var BaseAppender_1 = __webpack_require__(7);
-var LogLevel_1 = __webpack_require__(0);
-var LogColor_1 = __webpack_require__(5);
-var ConsoleAppender = /** @class */ (function (_super) {
-    __extends(ConsoleAppender, _super);
-    function ConsoleAppender(console) {
-        var _this = _super.call(this) || this;
-        _this.console = console;
-        return _this;
+Object.defineProperty(exports, "__esModule", { value: true });
+const BaseAppender_1 = __webpack_require__(7);
+const LogLevel_1 = __webpack_require__(0);
+const LogColor_1 = __webpack_require__(6);
+const Utils_1 = __webpack_require__(4);
+class ConsoleAppender extends BaseAppender_1.default {
+    constructor(console) {
+        super();
+        this.console = console;
     }
-    ConsoleAppender.prototype.append = function (entry) {
+    append(entry) {
         if (entry.useColor) {
             var color = "#0000000";
             switch (entry.level) {
@@ -206,6 +193,9 @@ var ConsoleAppender = /** @class */ (function (_super) {
                     break;
                 case LogLevel_1.LogLevel.TRACE:
                     color = LogColor_1.LogColor.TRACE;
+                    break;
+                case LogLevel_1.LogLevel.LOG:
+                    color = LogColor_1.LogColor.LOG;
                     break;
                 case LogLevel_1.LogLevel.INFO:
                     color = LogColor_1.LogColor.INFO;
@@ -221,21 +211,21 @@ var ConsoleAppender = /** @class */ (function (_super) {
                     break;
                 default:
             }
+            entry.stack = Utils_1.logStack(4);
             this.getConsole().log('%c' + this.layout.format(entry), 'color:' + color);
         }
         else {
             this.getConsole().log(this.layout.format(entry));
         }
-    };
-    ConsoleAppender.prototype.clear = function () {
+    }
+    clear() {
         this.getConsole().clear();
-    };
-    ConsoleAppender.prototype.getConsole = function () {
+    }
+    getConsole() {
         return this.console || console;
-    };
-    return ConsoleAppender;
-}(BaseAppender_1["default"]));
-exports["default"] = ConsoleAppender;
+    }
+}
+exports.default = ConsoleAppender;
 
 
 /***/ }),
@@ -244,19 +234,20 @@ exports["default"] = ConsoleAppender;
 
 "use strict";
 
-exports.__esModule = true;
-var LogLevel_1 = __webpack_require__(0);
+Object.defineProperty(exports, "__esModule", { value: true });
+const LogLevel_1 = __webpack_require__(0);
 /**
  * Simple layout, that formats logs as
  * "{time} {level} [{tag}] - {message}"
  */
-var BasicLayout = /** @class */ (function () {
-    function BasicLayout() {
+class BasicLayout {
+    constructor() {
     }
-    BasicLayout.prototype.format = function (entry) {
-        return this.formatDate(entry.time) + ' ' + LogLevel_1.logLevelToString(entry.level) + ' [' + entry.tag + '] - ' + entry.message;
-    };
-    BasicLayout.prototype.formatDate = function (date) {
+    format(entry) {
+        var stack = entry.stack ? entry.stack : "";
+        return stack + this.formatDate(entry.time) + ' ' + LogLevel_1.logLevelToString(entry.level) + ' [' + entry.tag + '] - ' + entry.message;
+    }
+    formatDate(date) {
         function pad(number) {
             if (number < 10) {
                 return '0' + number;
@@ -269,10 +260,9 @@ var BasicLayout = /** @class */ (function () {
             ' ' + pad(date.getHours()) +
             ':' + pad(date.getMinutes()) +
             ':' + pad(date.getSeconds());
-    };
-    return BasicLayout;
-}());
-exports["default"] = BasicLayout;
+    }
+}
+exports.default = BasicLayout;
 
 
 /***/ }),
@@ -281,101 +271,7 @@ exports["default"] = BasicLayout;
 
 "use strict";
 
-exports.__esModule = true;
-var LoggerConfig_1 = __webpack_require__(1);
-var LogLevel_1 = __webpack_require__(0);
-var Utils_1 = __webpack_require__(6);
-var Logger = /** @class */ (function () {
-    function Logger(tag, useColor) {
-        this.tag = tag;
-        this.useColor = useColor;
-    }
-    Logger.setConfig = function (config) {
-        Logger.config = config;
-    };
-    Logger.getLogger = function (tag) {
-        if (!tag) {
-            return Logger.getLogger('undefined');
-        }
-        if (Logger.loggers[tag]) {
-            return Logger.loggers[tag];
-        }
-        else {
-            return Logger.loggers[tag] = new Logger(tag);
-        }
-    };
-    Logger.prototype.log = function (message, object, deep) {
-        this.doLog(LogLevel_1.LogLevel.INFO, message, object, deep);
-    };
-    Logger.prototype.info = function (message, object, deep) {
-        this.doLog(LogLevel_1.LogLevel.INFO, message, object, deep);
-    };
-    Logger.prototype.fatal = function (message, object, deep) {
-        this.doLog(LogLevel_1.LogLevel.FATAL, message, object, deep);
-    };
-    Logger.prototype.error = function (message, object, deep) {
-        this.doLog(LogLevel_1.LogLevel.ERROR, message, object, deep);
-    };
-    Logger.prototype.debug = function (message, object, deep) {
-        this.doLog(LogLevel_1.LogLevel.DEBUG, message, object, deep);
-    };
-    Logger.prototype.warn = function (message, object, deep) {
-        this.doLog(LogLevel_1.LogLevel.WARN, message, object, deep);
-    };
-    Logger.prototype.trace = function (message, object, deep) {
-        this.doLog(LogLevel_1.LogLevel.TRACE, message, object, deep);
-    };
-    Logger.prototype.doLog = function (level, message, object, deep) {
-        if (level >= Logger.config.getLevel() && Logger.config.hasTag(this.tag)) {
-            if (typeof object !== "undefined") {
-                message += ' ' + Utils_1.stringify(object, deep || 1);
-            }
-            var appender = Logger.config.getAppender();
-            appender.append({
-                message: message,
-                time: new Date(),
-                tag: this.tag,
-                level: level,
-                useColor: this.useColor
-            });
-        }
-    };
-    Logger.loggers = {};
-    Logger.config = new LoggerConfig_1["default"]();
-    return Logger;
-}());
-exports["default"] = Logger;
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-exports.__esModule = true;
-/**
- * Created by jsroads on 2019/9/21 . 2:21 下午
- * Note:
- */
-var LogColor;
-(function (LogColor) {
-    LogColor["TRACE"] = "#2eb596";
-    LogColor["DEBUG"] = "#3f79e8";
-    LogColor["INFO"] = "#000000";
-    LogColor["WARN"] = "#bee22b";
-    LogColor["FATAL"] = "#ff56d9";
-    LogColor["ERROR"] = "#d00000";
-})(LogColor = exports.LogColor || (exports.LogColor = {}));
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 function stringify(object, deep) {
     function cut(obj, deep) {
         if (deep === 0)
@@ -399,6 +295,155 @@ function stringify(object, deep) {
     return JSON.stringify(cut(object, deep), null, 2);
 }
 exports.stringify = stringify;
+function logStack(index) {
+    var e = new Error();
+    var lines = e.stack.split("\n");
+    lines.shift();
+    var result = [];
+    lines.forEach(function (line) {
+        line = line.substring(7);
+        var lineBreak = line.split(" ");
+        if (lineBreak.length < 2) {
+            result.push(lineBreak[0]);
+        }
+        else {
+            result.push({ [lineBreak[0]]: lineBreak[1] });
+        }
+    });
+    var list = [];
+    if (index < result.length - 1) {
+        for (var a in result[index]) {
+            list.push(a);
+        }
+    }
+    var splitList = list[0].split(".");
+    return (splitList[0] + ".ts->" + splitList[1] + ": ");
+}
+exports.logStack = logStack;
+var REGEXP_NUM_OR_STR = /(%d)|(%s)/;
+var REGEXP_STR = /%s/;
+function formatStr() {
+    var argLen = arguments.length;
+    if (argLen === 0) {
+        return '';
+    }
+    var msg = arguments[0];
+    if (argLen === 1) {
+        return '' + msg;
+    }
+    var hasSubstitution = typeof msg === 'string' && REGEXP_NUM_OR_STR.test(msg);
+    if (hasSubstitution) {
+        for (let i = 1; i < argLen; ++i) {
+            var arg = arguments[i];
+            var regExpToTest = typeof arg === 'number' ? REGEXP_NUM_OR_STR : REGEXP_STR;
+            if (regExpToTest.test(msg))
+                msg = msg.replace(regExpToTest, arg);
+            else
+                msg += ' ' + arg;
+        }
+    }
+    else {
+        for (let i = 1; i < argLen; ++i) {
+            msg += ' ' + arguments[i];
+        }
+    }
+    return msg;
+}
+exports.formatStr = formatStr;
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const LoggerConfig_1 = __webpack_require__(1);
+const LogLevel_1 = __webpack_require__(0);
+const Utils_1 = __webpack_require__(4);
+class Logger {
+    constructor(tag, useColor) {
+        this.tag = tag;
+        this.useColor = useColor;
+    }
+    static setConfig(config) {
+        Logger.config = config;
+    }
+    static getLogger(tag) {
+        if (!tag) {
+            return Logger.getLogger('undefined');
+        }
+        if (Logger.loggers[tag]) {
+            return Logger.loggers[tag];
+        }
+        else {
+            return Logger.loggers[tag] = new Logger(tag);
+        }
+    }
+    log(message, object, deep) {
+        this.doLog(LogLevel_1.LogLevel.LOG, message, object, deep);
+    }
+    info(message, object, deep) {
+        this.doLog(LogLevel_1.LogLevel.INFO, message, object, deep);
+    }
+    fatal(message, object, deep) {
+        this.doLog(LogLevel_1.LogLevel.FATAL, message, object, deep);
+    }
+    error(message, object, deep) {
+        this.doLog(LogLevel_1.LogLevel.ERROR, message, object, deep);
+    }
+    debug(message, object, deep) {
+        this.doLog(LogLevel_1.LogLevel.DEBUG, message, object, deep);
+    }
+    warn(message, object, deep) {
+        this.doLog(LogLevel_1.LogLevel.WARN, message, object, deep);
+    }
+    trace(message, object, deep) {
+        this.doLog(LogLevel_1.LogLevel.TRACE, message, object, deep);
+    }
+    doLog(level, message, object, deep) {
+        if (level >= Logger.config.getLevel() && Logger.config.hasTag(this.tag)) {
+            if (typeof object !== "undefined") {
+                message += ' ' + Utils_1.stringify(object, deep || 1);
+            }
+            var appender = Logger.config.getAppender();
+            appender.append({
+                message: message,
+                time: new Date(),
+                tag: this.tag,
+                level: level,
+                useColor: this.useColor
+            });
+        }
+    }
+}
+Logger.loggers = {};
+Logger.config = new LoggerConfig_1.default();
+exports.default = Logger;
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Created by jsroads on 2019/9/21 . 2:21 下午
+ * Note:
+ */
+var LogColor;
+(function (LogColor) {
+    LogColor["TRACE"] = "#2eb596";
+    LogColor["DEBUG"] = "#3f79e8";
+    LogColor["LOG"] = "#000000";
+    LogColor["INFO"] = "#374C15";
+    LogColor["WARN"] = "#e2a03f";
+    LogColor["FATAL"] = "#ff56d9";
+    LogColor["ERROR"] = "#d00000";
+})(LogColor = exports.LogColor || (exports.LogColor = {}));
 
 
 /***/ }),
@@ -407,28 +452,25 @@ exports.stringify = stringify;
 
 "use strict";
 
-exports.__esModule = true;
-var BaseAppender = /** @class */ (function () {
-    function BaseAppender() {
-    }
-    BaseAppender.prototype.setLayout = function (layout) {
+Object.defineProperty(exports, "__esModule", { value: true });
+class BaseAppender {
+    setLayout(layout) {
         this.layout = layout;
-    };
-    BaseAppender.prototype.getLayout = function () {
+    }
+    getLayout() {
         return this.layout;
-    };
-    BaseAppender.prototype.setLayoutFunction = function (layout) {
+    }
+    setLayoutFunction(layout) {
         this.layout = {
             format: layout
         };
-    };
-    BaseAppender.prototype.append = function (entry) {
-    };
-    BaseAppender.prototype.clear = function () {
-    };
-    return BaseAppender;
-}());
-exports["default"] = BaseAppender;
+    }
+    append(entry) {
+    }
+    clear() {
+    }
+}
+exports.default = BaseAppender;
 
 
 /***/ }),
@@ -437,15 +479,15 @@ exports["default"] = BaseAppender;
 
 "use strict";
 
-exports.__esModule = true;
-var Logger_1 = __webpack_require__(4);
-exports.Logger = Logger_1["default"];
+Object.defineProperty(exports, "__esModule", { value: true });
+var Logger_1 = __webpack_require__(5);
+exports.Logger = Logger_1.default;
 var LoggerConfig_1 = __webpack_require__(1);
-exports.LoggerConfig = LoggerConfig_1["default"];
+exports.LoggerConfig = LoggerConfig_1.default;
 var BasicLayout_1 = __webpack_require__(3);
-exports.BasicLayout = BasicLayout_1["default"];
+exports.BasicLayout = BasicLayout_1.default;
 var ConsoleAppender_1 = __webpack_require__(2);
-exports.ConsoleAppender = ConsoleAppender_1["default"];
+exports.ConsoleAppender = ConsoleAppender_1.default;
 var LogLevel_1 = __webpack_require__(0);
 exports.LogLevel = LogLevel_1.LogLevel;
 

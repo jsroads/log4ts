@@ -11,7 +11,8 @@ export default class BasicLayout implements ILayout {
     }
 
     format(entry: LogEntry): string {
-        return this.formatDate(entry.time) + ' ' + logLevelToString(entry.level) + ' [' + entry.tag + '] - ' + entry.message;
+        var stack = entry.stack?entry.stack:"";
+        return stack+this.formatDate(entry.time) + ' ' + logLevelToString(entry.level) + ' [' + entry.tag + '] - ' + entry.message;
     }
 
     private formatDate(date: Date): string {
